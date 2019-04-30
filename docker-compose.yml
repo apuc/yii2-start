@@ -1,0 +1,48 @@
+version: '3.5'
+services:
+  app:
+    build: docker/build/app
+    container_name: yii2-app
+    ports:
+      - 80:80
+    volumes:
+      # Re-use local composer cache via host-volume
+      - ~/.composer-docker/cache:/root/.composer/cache:delegated
+      # Mount source-code for development
+      - ./:/app
+      # Mount apache log dir
+      - ./docker/container/app/var/log:/var/log
+    environment:
+      - YII_DEBUG=true
+      - YII_ENV=dev
+
+  mysql:
+    image: mysql:5.7
+    container_name: yii2-mysql
+    volumes:
+      - ./docker/container/mysql/etc/mysql/conf.d/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./docker/container/mysql/var/lib/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=yii2db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pass
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: yii2-phpmyadmin
+    ports:
+      - 8080:80
+    links:
+      - mysql:mysql
+    environment:
+      PMA_HOST: mysql
+    volumes:
+      - ./docker/container/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+
+  memcached:
+    image: memcached:1.5
+    container_name: yii2-memcached
+    command:
+      - '-m 32'
+      - '-v'
