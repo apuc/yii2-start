@@ -58,3 +58,46 @@ frontend
 vendor/                  contains dependent 3rd-party packages
 environments/            contains environment-based overrides
 ```
+
+Установка и настройка
+-------------------
+
+Переходим в папку с проектом
+```
+$ cd yii2-start
+```
+
+Установка зависимостей
+```
+$ composer install
+```
+
+Инициализация приложения
+```
+$ php init
+```
+
+Запуск докера
+
+*Для Window обязательно сначала установить права "Только чтение" на файл "docker/container/mysql/etc/mysql/conf.d/my.cnf"
+
+```
+$ docker-compose -f docker-compose.yml up -d
+```
+
+Остановка докера
+```
+$ docker-compose -f docker-compose.yml down
+```
+
+Данные для доступа к БД
+```
+БД: yii2db
+Пользователь: user
+Пароль: pass
+Пароль root: root
+```
+
+Frontend: /
+
+Backend: /secure
